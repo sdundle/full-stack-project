@@ -1,0 +1,84 @@
+services:
+  app:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: backend
+    # user: 'www-data:www-data'
+    volumes:
+      - ./:/var/www/html/backend
+    ports:
+      - "8080:80"
+    environment:
+      - APACHE_DOCUMENT_ROOT=/var/www/html/backend/public
+    depends_on:
+      - mysql
+    networks:
+      - laravel-net
+    # command: sh -c "composer install --ignore-platform-reqs"
+
+  # MySQL Database
+  mysql:
+    image: mysql:latest
+    container_name: laravel-mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: backend
+      # MYSQL_USER: root
+      MYSQL_PASSWORD: root
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+    networks:
+      - laravel-net
+
+  # phpmyadmin
+  phpmyadmin:
+    depends_on:
+      - mysql
+    image: phpmyadmin
+    restart: always
+    ports:
+      - "8090:80"
+    environment:
+      PMA_HOST: mysql
+      MYSQL_ROOT_PASSWORD: root
+    networks:
+      - laravel-net
+
+
+networks:
+  laravel-net:
+
+# services:
+#   web:
+#     image: backend:latest
+#     build:
+#       target: web
+#       context: ./
+#     env_file:
+#       - .env
+#     ports:
+#       - "8000:80"
+#     volumes:
+#       - .:/var/www/html/backend
+#     depends_on:
+#       - db
+  
+#   db:
+#     # platform: "linux/amd64"
+#     image: mysql:latest
+#     env_file:
+#       - .env
+#     environment:
+#       MYSQL_ROOT_PASSWORD: root
+#       MYSQL_DATABASE: backend
+#       MYSQL_PASSWORD: root
+#     ports:
+#       - "3306:3306"
+#     volumes:
+#       - dbdata:/var/lib/mysql
+
+# volumes:
+#   dbdata:

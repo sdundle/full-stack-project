@@ -1,0 +1,10 @@
+.search_button {
+  display: inline-block;
+  border-radius: 0;
+  background-color: #04AA6D;
+  color: #fff;
+}
+
+.date_picker {
+  display: block;
+}
